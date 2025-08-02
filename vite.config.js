@@ -4,9 +4,10 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/", // מאפשר ל-Vercel לטעון קבצים מ-root
+  base: "/", // חשוב לפריסת SPA ב-Vercel
   build: {
-    outDir: "dist", // תיקייה סופית ל-build
+    outDir: "dist", // תיקיית הבילד
+    assetsDir: "", // לשמור את הקבצים ב-root של dist
   },
   server: {
     host: "0.0.0.0",
