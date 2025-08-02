@@ -4,12 +4,12 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAYo95ZhK_B3p4gI4_o_o0jXREm-QiJypo",
-  authDomain: "fitconnect-2f25f.firebaseapp.com",
-  projectId: "fitconnect-2f25f",
-  storageBucket: "fitconnect-2f25f.appspot.com", // ✅ מתוקן
-  messagingSenderId: "298017926794",
-  appId: "1:298017926794:web:ba56bc5797a0f988e9c773"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
