@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   base: "/", // מאפשר ל-Vercel לטעון קבצים מ-root
   build: {
-    outDir: "dist" // תיקייה סופית ל-build
+    outDir: "dist", // תיקייה סופית ל-build
   },
   server: {
     host: "0.0.0.0",
