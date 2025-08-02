@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "", // מאפשר ל-Vercel לטעון קבצים מ-root
+  base: "/", // מאפשר ל-Vercel לטעון קבצים מ-root
   build: {
     outDir: "dist" // תיקייה סופית ל-build
   },
