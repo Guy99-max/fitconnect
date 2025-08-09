@@ -45,20 +45,31 @@ export default function Navbar({ role }) {
         { path: "/profile", label: "Profile" },
       ];
 
+  // בסיס אחיד לפריטי ניווט
+  const desktopItemBase =
+    "inline-flex items-center px-2 py-1 text-sm transition-colors";
+  const mobileItemBase =
+    "block w-full pl-4 py-2 text-left text-sm leading-6";
+
   return (
     <nav className="bg-black border-b border-gray-800 px-4 py-3 flex justify-between items-center relative z-20">
       <h1 className="text-xl font-bold text-white">FitConnect</h1>
 
       {/* Desktop */}
-      <div className="hidden md:flex space-x-6 items-center">
+      <div className="hidden md:flex items-center space-x-6">
         {navLinks.map(({ path, label, onClick }) => {
-          const isCurrent = isActive(path);
-          const className = `text-sm ${
-            isCurrent ? "font-bold text-white" : "text-gray-400"
-          } hover:text-white`;
+          const active = isActive(path);
+          const stateCls = active
+            ? "font-semibold text-white"
+            : "text-gray-400 hover:text-white";
+          const className = `${desktopItemBase} ${stateCls}`;
 
           return onClick ? (
-            <button key={label} onClick={onClick} className={className}>
+            <button
+              key={label}
+              onClick={onClick}
+              className={`${className} appearance-none bg-transparent border-0`}
+            >
               {label}
             </button>
           ) : (
@@ -67,26 +78,34 @@ export default function Navbar({ role }) {
             </Link>
           );
         })}
-        <button onClick={handleLogout} className="text-red-500 hover:underline text-sm">
+        <button
+          onClick={handleLogout}
+          className={`${desktopItemBase} text-red-500 hover:text-red-400`}
+        >
           Logout
         </button>
       </div>
 
-      {/* Mobile */}
+      {/* Mobile toggle */}
       <div className="md:hidden">
-        <button onClick={() => setIsOpen(!isOpen)}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="inline-flex items-center justify-center p-2"
+        >
           {isOpen ? <X size={24} color="white" /> : <Menu size={24} color="white" />}
         </button>
       </div>
 
+      {/* Mobile menu */}
       {isOpen && (
         <div className="absolute top-full left-0 w-full bg-black border-t border-gray-800 md:hidden z-10">
-          <div className="flex flex-col p-4 space-y-3">
+          <div className="flex flex-col py-2">
             {navLinks.map(({ path, label, onClick }) => {
-              const isCurrent = isActive(path);
-              const className = `text-sm ${
-                isCurrent ? "font-bold text-white" : "text-gray-400"
-              } hover:text-white text-left`;
+              const active = isActive(path);
+              const stateCls = active
+                ? "font-semibold text-white"
+                : "text-gray-300 hover:text-white";
+              const className = `${mobileItemBase} ${stateCls}`;
 
               return onClick ? (
                 <button
@@ -95,7 +114,7 @@ export default function Navbar({ role }) {
                     setIsOpen(false);
                     onClick();
                   }}
-                  className={className}
+                  className={`${className} appearance-none bg-transparent border-0`}
                 >
                   {label}
                 </button>
@@ -115,7 +134,7 @@ export default function Navbar({ role }) {
                 setIsOpen(false);
                 handleLogout();
               }}
-              className="text-red-500 hover:underline text-sm text-left"
+              className={`${mobileItemBase} text-red-500 hover:text-red-400`}
             >
               Logout
             </button>
