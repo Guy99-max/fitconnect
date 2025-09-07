@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 // Firebase
 import { onAuthStateChanged, getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { initializeApp, deleteApp } from "firebase/app";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { initializeApp, getApps, deleteApp } from "firebase/app";
 import { auth, db, app as primaryApp } from "../firebase";
 
 export default function AddTrainee() {
@@ -48,10 +48,16 @@ export default function AddTrainee() {
 
     setLoading(true);
 
-    // יצירת אפליקציה משנית כדי לא לפגוע בסשן המאמן
+    // יצירת/מחזור אפליקציה משנית כדי לא לפגוע בסשן המאמן
     let secondaryApp = null;
+    let createdNew = false;
+
     try {
-      secondaryApp = initializeApp(primaryApp.options, "Secondary");
+      secondaryApp = getApps().find((a) => a.name === "Secondary");
+      if (!secondaryApp) {
+        secondaryApp = initializeApp(primaryApp.options, "Secondary");
+        createdNew = true;
+      }
       const secondaryAuth = getAuth(secondaryApp);
 
       // 1) יצירת משתמש חדש (לא מנתק את המאמן)
@@ -75,7 +81,7 @@ export default function AddTrainee() {
         createdAt: serverTimestamp(),
       });
 
-      // 3) קישור דו־כיווני (אופציונלי אך מומלץ)
+      // 3) קישור דו־כיווני (מומלץ)
       await setDoc(
         doc(db, "trainers", trainerId, "trainees", trainee.uid),
         {
@@ -98,7 +104,6 @@ export default function AddTrainee() {
       alert("Trainee created successfully");
       navigate("/trainees");
     } catch (err) {
-      // טיפול בשגיאות נפוצות של Auth
       const code = err?.code || "";
       if (code === "auth/email-already-in-use") {
         setError("Email already in use.");
@@ -110,7 +115,8 @@ export default function AddTrainee() {
         setError(err?.message || String(err));
       }
     } finally {
-      if (secondaryApp) {
+      // מוחקים רק אם יצרנו חדש עכשיו (לא אם מחזרנו קיים)
+      if (secondaryApp && createdNew) {
         try { await deleteApp(secondaryApp); } catch {}
       }
       setLoading(false);

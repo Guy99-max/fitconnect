@@ -1,5 +1,5 @@
 // src/firebase.js
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, setLogLevel } from "firebase/firestore";
 
@@ -12,9 +12,11 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_APP_ID,
 };
 
-export const app = initializeApp(firebaseConfig); // ← export the app
+// עמיד לשינויים/רענון חם: לאתחל פעם אחת בלבד
+export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// אופציונלי לזיהוי תקלות נטוורק/חוקים:
-setLogLevel("debug");
+// לוגים: debug רק בפיתוח, error בפרודקשן
+if (import.meta.env.DEV) setLogLevel("debug");
+else setLogLevel("error");
